@@ -1917,6 +1917,11 @@ void setup() {
 
 	Wire.begin(ESP32_I2C_SDA, ESP32_I2C_SCL);
 
+	// Initialize hardware audio mute pin (GPIO 36)
+	// Low = unmuted (normal), High = muted
+	pinMode(AUDIO_MUTE, OUTPUT);
+	digitalWrite(AUDIO_MUTE, LOW);  // Default: unmuted
+
 	delay(300);
 
 	// EEPROM
@@ -1994,6 +1999,7 @@ void doCurrentMenuCmd() {
 		if (muted) {
 			rx.setVolume(mute_vol_val);
 			muted = false;
+			digitalWrite(AUDIO_MUTE, LOW);   // Hardware unmute: Low = normal
 		}
 		cmdVolume = true;
 		break;
@@ -2056,8 +2062,12 @@ void doCurrentMenuCmd() {
 		{
 			mute_vol_val = rx.getVolume();
 			rx.setVolume(0);
+			digitalWrite(AUDIO_MUTE, HIGH);  // Hardware mute: High = muted
 		}
-		else rx.setVolume(mute_vol_val);
+		else {
+			rx.setVolume(mute_vol_val);
+			digitalWrite(AUDIO_MUTE, LOW);   // Hardware unmute: Low = normal
+		}
 		break;
 
 		// G8PTN: Added
