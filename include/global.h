@@ -31,6 +31,10 @@
 
 #define AUDIO_MUTE 36
 
+#define AMP_EN 18
+
+#define PIN_POWER_ON 15
+
 #define AUDIO_INPUT 3
 
 void hal_extcom_start();

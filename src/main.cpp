@@ -1922,6 +1922,11 @@ void setup() {
 	pinMode(AUDIO_MUTE, OUTPUT);
 	digitalWrite(AUDIO_MUTE, LOW);  // Default: unmuted
 
+	// Initialize power on control pin (GPIO 15)
+	// High = power on (default)
+	pinMode(PIN_POWER_ON, OUTPUT);
+	digitalWrite(PIN_POWER_ON, HIGH);
+
 	delay(300);
 
 	// EEPROM
@@ -1985,6 +1990,10 @@ void setup() {
 
 	sampling_period_us = round(1000000 * (1.0 / SAMPLING_FREQ));
 
+	// Initialize amplifier enable pin (GPIO 18)
+	// High = amplifier on, Low = amplifier off
+	pinMode(AMP_EN, OUTPUT);
+	digitalWrite(AMP_EN, HIGH);     // Default: amplifier on
 }
 
 // -----------------------------------------------------------------------------------
@@ -2000,6 +2009,7 @@ void doCurrentMenuCmd() {
 			rx.setVolume(mute_vol_val);
 			muted = false;
 			digitalWrite(AUDIO_MUTE, LOW);   // Hardware unmute: Low = normal
+			digitalWrite(AMP_EN, HIGH);      // Enable amplifier
 		}
 		cmdVolume = true;
 		break;
@@ -2063,10 +2073,12 @@ void doCurrentMenuCmd() {
 			mute_vol_val = rx.getVolume();
 			rx.setVolume(0);
 			digitalWrite(AUDIO_MUTE, HIGH);  // Hardware mute: High = muted
+			digitalWrite(AMP_EN, LOW);       // Disable amplifier
 		}
 		else {
 			rx.setVolume(mute_vol_val);
 			digitalWrite(AUDIO_MUTE, LOW);   // Hardware unmute: Low = normal
+			digitalWrite(AMP_EN, HIGH);      // Enable amplifier
 		}
 		break;
 
